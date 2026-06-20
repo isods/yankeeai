@@ -2,11 +2,120 @@
 
 This guide explains how to use the desktop app for sign-in, local models, file uploads, and collections (knowledge bases).
 
-Download the latest version here: [YankeeAI_0.1.0_x64_en-US.msi](https://pub-cad9c2eac9c943378f065993063e6ab4.r2.dev/builds/26734701726/x86_64-pc-windows-msvc/YankeeAI_0.1.0_x64_en-US.msi)
+Download the latest version here: [YankeeAI_0.1.0_x64_en-US.msi](https://pub-cad9c2eac9c943378f065993063e6ab4.r2.dev/builds/27909292028/x86_64-pc-windows-msvc/YankeeAI_0.1.0_x64_en-US.msi)
 
-See the demo videos at https://drive.google.com/drive/folders/1-csGRaizysbwBaJvZaUVeoMcVzllUlyH
+### Windows Installation Warning
 
-Currently only Windows is supported.
+When installing on Windows, you may see a security warning stating that the publisher cannot be verified or the app is unsigned. This is expected for development builds.
+
+**To proceed with installation:**
+1. Click **"More info"** in the Windows SmartScreen warning
+2. Click **"Run anyway"** to continue with the installation
+
+The app is safe to install - this warning appears because the build is not yet signed with a trusted certificate.
+
+---
+
+# Version v1.0.0(current)
+
+This section describes the **current version** (build date: after 01 Jun 2026 00:31:41 EDT).
+
+## What’s new (since v0.0.1)
+
+| Feature                                | What it does                                                                     | Where to find it                            |
+| -------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------- |
+| **Native GGUF chat**                   | Run local GGUF models directly via llama-cpp-python (no Ollama required).        | **Tools → My Models** (native models)       |
+| **Native model generation parameters** | Configure temperature, top P, top K, min P, and system prompt for native models. | **Tools → My Models** → model settings      |
+| **RAG architecture switch**            | Choose between **Simple RAG** and **Agent RAG** retrieval pipeline behavior.     | **Tools → My Models** / model settings area |
+| **RAG retrieval settings**             | Override retrieval settings (Top K / Context K) per conversation.                | Chat page toolbar → **Retrieval settings** (layers icon)    |
+| **Multimodal model detection**         | Automatically detect vision capabilities from HuggingFace metadata.              | **Tools → Model Browser**                   |
+
+## Native GGUF chat
+
+The app now supports running GGUF models directly via llama-cpp-python, without requiring Ollama.
+
+1. Open **Tools → My Models**.
+2. Switch to the **Native** tab to see installed GGUF models.
+3. Download GGUF models from **Tools → Model Browser** (HuggingFace source).
+4. Select a native model as your active model for chat.
+
+## RAG architecture switch
+
+Choose how the app retrieves context from your files:
+
+- **Simple RAG**: Single-step retrieval. Fetch top K chunks, include up to Context K in the prompt.
+- **Agent RAG**: Use the LangGraph retrieval pipeline (current default behavior).
+
+Found in: **Tools → My Models** → model settings area.
+
+## RAG retrieval settings (per-chat)
+
+Override global retrieval settings for a specific conversation:
+
+1. In any chat, click the **Retrieval settings** (layers) icon in the chat toolbar.
+2. Adjust **Top K** (chunks retrieved) and **Context K** (chunks included in prompt).
+3. Settings apply only to this conversation.
+
+---
+
+# Dev version v0.0.1 (build: 01 Jun 2026 00:31:41 EDT)
+
+## What’s new (since initial release)
+
+| Feature                                   | What it does                                                                                            | Where to find it                                                               |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| **Web search in chat**                    | Lets the assistant search the web and cite sources in the response.                                     | Chat page toolbar (toggle / globe), and sources shown under assistant messages |
+| **Link library + scraping**               | Save links, select one or more, scrape readable content, and attach it as context to your next message. | Chat header / toolbar → **Link library**                                       |
+| **Better citations + Sources UI**         | Answers can show clickable inline citations like `[1]` and a **Sources** section under messages.        | Under assistant messages in chat                                               |
+| **Image support (vision models)**         | Attach images (and paste from clipboard) and chat with a vision-capable model.                          | Chat prompt attachments; paste with Cmd/Ctrl+V                                 |
+| **Embedding model management + re-index** | Switch the embedding model used for file indexing and re-index all uploaded files.                      | **Settings → Files & Storage**                                                 |
+
+## Web search in chat
+
+1. Open any chat.
+2. Enable **Web search** in the chat toolbar.
+3. Ask your question.
+4. After the assistant responds, check the **Searched the web** section under the message for the list of sources.
+
+Notes:
+
+- If you attach images and your local model supports vision, the app may derive better web queries from the image content.
+- Web sources open in your system browser.
+
+## Link library (scrape links into context)
+
+Use this when you want the assistant to answer from one or more web pages.
+
+1. In chat, open **Link library**.
+2. In **Add a link**, enter a URL and a title, then click **Save link**.
+3. Select one or more saved links.
+4. (Optional) Enable **Discover sub-pages when scraping** and adjust **Max depth** / **Max pages**.
+5. Click **Scrape selected**.
+6. When you see **Link context ready**, send your next message. The scraped text will be included as context.
+
+Tip:
+
+- If a page can't be scraped (JS-heavy sites, blocked bots), try opening it externally and using another source.
+
+## Images in chat (vision)
+
+You can include images in two ways:
+
+1. Click the image/file attachment control and choose an image file.
+2. Paste an image with Cmd/Ctrl+V.
+
+Important:
+
+- Image understanding requires a **vision-capable** model (for Ollama, the UI will warn if the current model does not support vision).
+
+## Embedding model & re-index (desktop)
+
+1. Open **Settings → Files & Storage**.
+2. Choose an **Embedding Model**.
+3. Click **Apply & Re-index**.
+4. Confirm the switch.
+
+Re-indexing status is shown with a progress bar.
 
 ---
 
@@ -41,11 +150,11 @@ You return to guest mode and can continue using local features where available.
 
 ### Troubleshooting login
 
-| Issue | What to try |
-|--------|-------------|
-| Browser does not open | Check network connection; quit and restart the app. |
+| Issue                                           | What to try                                                                                        |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Browser does not open                           | Check network connection; quit and restart the app.                                                |
 | Login succeeds in browser but app stays waiting | Bring the desktop app to the front; if needed, restart the app (deep link may resume the session). |
-| **Login Error** toast | Confirm the app backend is running and you are online. |
+| **Login Error** toast                           | Confirm the app backend is running and you are online.                                             |
 
 ---
 
@@ -107,10 +216,10 @@ The app can read your documents and use them as context in chat. Open the knowle
 
 ### Supported file types
 
-| Type | Extensions |
-|------|------------|
-| Documents | PDF, DOC, DOCX, PPTX |
-| Text / data | TXT, MD, CSV, JSON |
+| Type        | Extensions           |
+| ----------- | -------------------- |
+| Documents   | PDF, DOC, DOCX, PPTX |
+| Text / data | TXT, MD, CSV, JSON   |
 
 **Maximum file size:** 100 MB per file.
 
@@ -138,10 +247,6 @@ Unsupported types show a warning and are skipped.
 5. Use **Delete** to remove files you no longer need.
 
 Uploaded files are indexed for search. Processing status is tracked per file (`pending`, `processing`, `completed`, `failed`).
-
-### Google Drive (optional)
-
-If Google Drive is connected in settings, you can pick a file from Drive after authorization. It is uploaded into **My Files** and processed like a local upload.
 
 ### File context in conversations
 
@@ -188,11 +293,11 @@ To use only **some** files: open the collection, select rows, and use **Add cont
 
 ### Rename, export, and delete
 
-| Action | How |
-|--------|-----|
-| **Rename** | Pencil icon on the collection row → edit name → confirm |
+| Action     | How                                                                                                               |
+| ---------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Rename** | Pencil icon on the collection row → edit name → confirm                                                           |
 | **Export** | Download icon → saves a ZIP to **Downloads** (`<name>_collection.zip`) with manifest, vectors, and original files |
-| **Delete** | Trash icon → click again to confirm. Removes the collection and its indexed data |
+| **Delete** | Trash icon → click again to confirm. Removes the collection and its indexed data                                  |
 
 ### Import a collection
 
@@ -219,34 +324,34 @@ This is only needed when vectors were imported but binary originals were not in 
 
 ### Collections vs. chat attachments
 
-| | **Global file (Files tab)** | **Collection** |
-|--|---------------------------|----------------|
-| Embedding model | App default (Settings → Files) | Fixed at collection creation |
-| Best for | One-off documents, mixed uploads | Persistent knowledge base, many related files |
-| Attach to chat | Select files → **Add context** | **Chat with collection** or select subset |
+|                 | **Global file (Files tab)**      | **Collection**                                |
+| --------------- | -------------------------------- | --------------------------------------------- |
+| Embedding model | App default (Settings → Files)   | Fixed at collection creation                  |
+| Best for        | One-off documents, mixed uploads | Persistent knowledge base, many related files |
+| Attach to chat  | Select files → **Add context**   | **Chat with collection** or select subset     |
 
 ### Troubleshooting collections
 
-| Issue | What to try |
-|--------|-------------|
-| **Collection is empty** for chat | Upload at least one file and wait until processing completes. |
-| Import fails | Use a valid export ZIP; check embedding model id matches an installed model. |
-| Wrong answers from collection | Confirm you started chat via **Chat with collection** and the embedding model matches the one used when files were indexed. |
-| Pull / download during import stuck | Ensure Ollama is running (for `ollama:…` models) or wait for Hugging Face cache download on first use. |
+| Issue                               | What to try                                                                                                                 |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **Collection is empty** for chat    | Upload at least one file and wait until processing completes.                                                               |
+| Import fails                        | Use a valid export ZIP; check embedding model id matches an installed model.                                                |
+| Wrong answers from collection       | Confirm you started chat via **Chat with collection** and the embedding model matches the one used when files were indexed. |
+| Pull / download during import stuck | Ensure Ollama is running (for `ollama:…` models) or wait for Hugging Face cache download on first use.                      |
 
 ---
 
 ## Quick reference
 
-| Goal | Where to go |
-|------|-------------|
-| Sign in | Sidebar → **Sign In** |
-| Install Ollama | **Tools** → setup modal → **Installation** |
-| Download a chat model | **Tools** → **Model Browser** → **Pull** → **Use Model** |
-| Manage installed models | **Tools** → **My Models** |
-| Upload a file for one chat | Chat → **paperclip** |
-| Manage all files & collections | Chat header → **folder** → **My Files** |
-| New collection | **My Files** → **Collections** → **New** |
-| Ask questions over a knowledge base | **Collections** → **Chat with collection** |
+| Goal                                | Where to go                                              |
+| ----------------------------------- | -------------------------------------------------------- |
+| Sign in                             | Sidebar → **Sign In**                                    |
+| Install Ollama                      | **Tools** → setup modal → **Installation**               |
+| Download a chat model               | **Tools** → **Model Browser** → **Pull** → **Use Model** |
+| Manage installed models             | **Tools** → **My Models**                                |
+| Upload a file for one chat          | Chat → **paperclip**                                     |
+| Manage all files & collections      | Chat header → **folder** → **My Files**                  |
+| New collection                      | **My Files** → **Collections** → **New**                 |
+| Ask questions over a knowledge base | **Collections** → **Chat with collection**               |
 
 For technical details on auth and file processing architecture, see [desktop/auth-telemetry.md](./desktop/auth-telemetry.md) and [frontend/chat_with_files_workflow.md](./frontend/chat_with_files_workflow.md).
