@@ -2,7 +2,7 @@
 
 This guide explains how to use the desktop app for sign-in, local models, file uploads, and collections (knowledge bases).
 
-Download the latest version here: [YankeeAI_0.1.0_x64_en-US.msi](https://pub-cad9c2eac9c943378f065993063e6ab4.r2.dev/builds/27909292028/x86_64-pc-windows-msvc/YankeeAI_0.1.0_x64_en-US.msi)
+Download the latest version here: [YankeeAI_0.1.0_x64_en-US.msi](https://pub-cad9c2eac9c943378f065993063e6ab4.r2.dev/builds/31315046964/x86_64-pc-windows-msvc/YankeeAI_0.1.0_x64_en-US.ms)
 
 ### Windows Installation Warning
 
@@ -58,9 +58,25 @@ Override global retrieval settings for a specific conversation:
 
 ---
 
-# Dev version v0.0.1 (build: 01 Jun 2026 00:31:41 EDT)
+# Dev version v0.0.1 (build: 09 Aug 2026)
 
-## What’s new (since initial release)
+## What's new (since last build)
+
+### Highlights                                                                                                                            
+                                                                                                                                          
+- Upload PDFs, CSV files, and Excel workbooks with tables preserved for more accurate answers from your data.                             
+- Choose recursive, page-based, or paragraph-based chunking when uploading files.                                                         
+- Add and manage custom LLM and vector-database endpoints from the app.                                                                   
+- Read mathematical formulas, Markdown tables, citations, and images more reliably in chat responses.                                     
+                                                                                                                                          
+### Improvements and fixes                                                                                                                
+                                                                                                                                          
+- Faster, more relevant retrieval from uploaded files, including better citation links.                                                   
+- Better web-search results and heading formatting.                                                                                       
+- Native GGUF models now include a repetition penalty setting to reduce repetitive answers.                                               
+- Improved Windows reliability, including cleaner shutdowns and more robust application logging.  
+
+## Changes since initial release
 
 | Feature                                   | What it does                                                                                            | Where to find it                                                               |
 | ----------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
