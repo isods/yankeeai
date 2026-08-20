@@ -2,7 +2,7 @@
 
 This guide explains how to use the desktop app for sign-in, local models, file uploads, and collections (knowledge bases).
 
-Download the latest version here: [YankeeAI_0.1.0_x64_en-US.msi](https://pub-cad9c2eac9c943378f065993063e6ab4.r2.dev/builds/31315046964/x86_64-pc-windows-msvc/YankeeAI_0.1.0_x64_en-US.msi)
+Download the latest version here: [YankeeAI_0.1.0_x64_en-US.msi](https://pub-cad9c2eac9c943378f065993063e6ab4.r2.dev/builds/32323502897/x86_64-pc-windows-msvc/YankeeAI_0.1.0_x64_en-US.msi)
 
 ### Windows Installation Warning
 
