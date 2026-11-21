@@ -2,17 +2,76 @@
 
 This guide explains how to use the desktop app for sign-in, local models, file uploads, and collections (knowledge bases).
 
-Download the latest version here: [YankeeAI_0.1.0_x64_en-US.msi](https://pub-cad9c2eac9c943378f065993063e6ab4.r2.dev/builds/32323502897/x86_64-pc-windows-msvc/YankeeAI_0.1.0_x64_en-US.msi)
+## Install
 
-### Windows Installation Warning
+Download the latest build from the [releases page](https://github.com/isods/yankeeai/releases/latest), and pick the file for your platform:
 
-When installing on Windows, you may see a security warning stating that the publisher cannot be verified or the app is unsigned. This is expected for development builds.
+| Platform                             | File                               |
+| ------------------------------------ | ---------------------------------- |
+| Windows                              | `YankeeAI_<version>_x64_en-US.msi` |
+| macOS — Apple Silicon (M1 and later) | `YankeeAI_<version>_aarch64.dmg`   |
+| macOS — Intel                        | `YankeeAI_<version>_x64.dmg`       |
+
+To check which Mac you have: **Apple menu → About This Mac**, then look at **Chip** or **Processor**.
+
+### macOS
+
+The macOS builds are **ad-hoc signed**, not notarized by Apple, so downloading through a browser makes macOS report that it could not verify the app. There are two ways to install.
+
+#### Option 1 — installer script (recommended)
+
+This avoids the warning entirely. Open **Terminal** and run:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/isods/yankeeai/main/install-macos.sh | bash
+```
+
+The script downloads the DMG matching your Mac's architecture, verifies its SHA-256 checksum, and installs the app to `/Applications`. Because `curl` does not mark downloads with the `com.apple.quarantine` attribute, macOS skips its first-launch security check.
+
+To install a specific version, or somewhere other than `/Applications`:
+
+```bash
+# Specific version
+curl -fsSL https://raw.githubusercontent.com/isods/yankeeai/main/install-macos.sh | bash -s -- 1.0.1
+
+# Custom install directory
+curl -fsSL https://raw.githubusercontent.com/isods/yankeeai/main/install-macos.sh | bash -s -- --dir "$HOME/Applications"
+```
+
+If the app is already installed, the script asks before replacing it; add `--yes` to skip that prompt.
+
+#### Option 2 — download the DMG manually
+
+1. Download the `.dmg` for your Mac from the [releases page](https://github.com/isods/yankeeai/releases/latest).
+2. Open the DMG and drag **YankeeAI** into **Applications**.
+3. Launch the app once and dismiss the warning.
+4. Open **System Settings → Privacy & Security**, scroll to the security section, and click **Open Anyway** next to the message about YankeeAI.
+5. Enter your password, then launch the app again.
+
+On macOS 15 (Sequoia) and later, right-clicking the app and choosing **Open** no longer bypasses this.
+
+### Windows
+
+When installing on Windows, you may see a security warning stating that the publisher cannot be verified or the app is unsigned. This is expected: the builds are not signed with a paid code-signing certificate.
 
 **To proceed with installation:**
 1. Click **"More info"** in the Windows SmartScreen warning
 2. Click **"Run anyway"** to continue with the installation
 
 The app is safe to install - this warning appears because the build is not yet signed with a trusted certificate.
+
+**Alternative — clear the download mark first**
+
+Windows records where a file came from in a hidden attribute, and that is what triggers the warning. To skip clicking through it, open **PowerShell** and clear the mark before running the installer:
+
+```powershell
+Unblock-File -Path "$HOME\Downloads\YankeeAI_<version>_x64_en-US.msi"
+```
+
+> [!NOTE]
+> On Windows 11, **Smart App Control** can block the installer outright, with no "Run anyway" option, because it accepts only signed apps and has no per-app exception. If the installer will not start at all, look under **Windows Security → App & browser control → Smart App Control**.
+
+Windows may also ask for administrator permission, showing "Unknown publisher" for the same reason: the build is unsigned.
 
 ---
 
@@ -81,10 +140,10 @@ Override global retrieval settings for a specific conversation:
 | Feature                                   | What it does                                                                                            | Where to find it                                                               |
 | ----------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
 | **Web search in chat**                    | Lets the assistant search the web and cite sources in the response.                                     | Chat page toolbar (toggle / globe), and sources shown under assistant messages |
-| **Link library + scraping**               | Save links, select one or more, scrape readable content, and attach it as context to your next message. | Chat header / toolbar → **Link library**                                       |
+| **Link library + scraping**               | Save links, select one or more, scrape readable content, and attach it as context to your messages.     | Chat header / toolbar → **Link library**                                       |
 | **Better citations + Sources UI**         | Answers can show clickable inline citations like `[1]` and a **Sources** section under messages.        | Under assistant messages in chat                                               |
 | **Image support (vision models)**         | Attach images (and paste from clipboard) and chat with a vision-capable model.                          | Chat prompt attachments; paste with Cmd/Ctrl+V                                 |
-| **Embedding model management + re-index** | Switch the embedding model used for file indexing and re-index all uploaded files.                      | **Settings → Files & Storage**                                                 |
+| **Embedding model management + re-index** | Switch the embedding model used for file indexing and re-index all uploaded files.                      | **Settings → Models & Retrieval → Indexing**                                   |
 
 ## Web search in chat
 
@@ -107,11 +166,19 @@ Use this when you want the assistant to answer from one or more web pages.
 3. Select one or more saved links.
 4. (Optional) Enable **Discover sub-pages when scraping** and adjust **Max depth** / **Max pages**.
 5. Click **Scrape selected**.
-6. When you see **Link context ready**, send your next message. The scraped text will be included as context.
+6. When you see **Link context ready**, send your message.
 
-Tip:
+What you get:
+
+- The **Links** button in the chat toolbar is highlighted and shows how many sources are attached, and a chip above the message box lists them. Click **×** on the chip to remove the context.
+- The answer is grounded on the scraped pages, and each source is listed under the answer in a **From your links** section with its excerpt and a clickable link. Inline `[1]`, `[2]` markers in the answer are clickable and show the matching excerpt.
+- Link context **stays attached** for every following message by default, and is re-matched to each new question. Click **Keep attached** on the chip to stop reusing it (it then applies to your next message only), or **×** to remove it.
+- If you change your question after scraping, the app re-matches the pages it already downloaded against your updated question before sending (no re-download), so the retrieved parts match what you actually asked.
+
+Tips:
 
 - If a page can't be scraped (JS-heavy sites, blocked bots), try opening it externally and using another source.
+- Scraped pages are filtered to the chunks that best match your question, so a long page only contributes its relevant parts.
 
 ## Images in chat (vision)
 
@@ -126,8 +193,8 @@ Important:
 
 ## Embedding model & re-index (desktop)
 
-1. Open **Settings → Files & Storage**.
-2. Choose an **Embedding Model**.
+1. Open **Settings → Models & Retrieval** and scroll to **Indexing**.
+2. Choose an **Embedding model**.
 3. Click **Apply & Re-index**.
 4. Confirm the switch.
 
@@ -369,5 +436,3 @@ This is only needed when vectors were imported but binary originals were not in 
 | Manage all files & collections      | Chat header → **folder** → **My Files**                  |
 | New collection                      | **My Files** → **Collections** → **New**                 |
 | Ask questions over a knowledge base | **Collections** → **Chat with collection**               |
-
-For technical details on auth and file processing architecture, see [desktop/auth-telemetry.md](./desktop/auth-telemetry.md) and [frontend/chat_with_files_workflow.md](./frontend/chat_with_files_workflow.md).
