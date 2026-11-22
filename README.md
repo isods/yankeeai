@@ -75,7 +75,7 @@ Windows may also ask for administrator permission, showing "Unknown publisher" f
 
 ---
 
-# Version v1.0.0(current)
+# Version v1.0.2(current)
 
 This section describes the **current version** (build date: after 01 Jun 2026 00:31:41 EDT).
 
